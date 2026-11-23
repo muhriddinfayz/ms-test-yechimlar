@@ -1,0 +1,8 @@
+# publish only the site: decks, landing page, shared assets, images
+/*
+!/.gitignore
+!/.nojekyll
+!/index.html
+!/*_prezentatsiya.html
+!/assets/
+!/images/
