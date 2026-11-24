@@ -1,3 +1,28 @@
+// On the GitHub Pages site a deck opens for visitors only if the owner listed it in visible.json
+// (managed from boshqaruv.html). The owner's own device (token saved there) opens every deck.
+// Local files and the single-file tablet copies are never gated.
+(function(){
+  if (!/\.github\.io$/.test(location.hostname)) return;
+  const m = decodeURIComponent(location.pathname).match(/(Fizika_MS_TEST|Matematika_MOCK)_(\d+)_prezentatsiya/);
+  if (!m) return;
+  try { if (localStorage.getItem('msOwnerToken')) return; } catch (e) {}
+  const code = m[1][0] + m[2];
+  const root = document.documentElement;
+  root.style.visibility = 'hidden';
+  function closed(){
+    document.body.innerHTML =
+      '<div style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;' +
+      'gap:18px;background:#0B1B3A;color:#fff;font:600 22px/1.4 Segoe UI,Roboto,system-ui,sans-serif;text-align:center;padding:24px;z-index:2147483647">' +
+      '<div style="font-size:54px">🔒</div><div>Bu prezentatsiya hozircha yopiq.</div>' +
+      '<a href="./" style="color:#0B1B3A;background:#FFC531;padding:12px 26px;border-radius:12px;text-decoration:none;font-weight:800">Bosh sahifa</a></div>';
+    root.style.visibility = '';
+  }
+  fetch('visible.json?t=' + Date.now(), { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(v => { if ((v.visible || []).indexOf(code) >= 0) root.style.visibility = ''; else closed(); })
+    .catch(closed);
+})();
+
 // Pen / annotation layer: draw on slides while recording.
 // Strokes are kept per slide (in stage coordinates 1920x1080) and redrawn when you come back.
 window.Annot = (function(){
@@ -399,5 +424,8 @@ window.Annot = (function(){
   // load every font first so measurements are exact, then lay out and start
   Promise.all(Array.from(document.fonts).map(f => f.load().catch(()=>null)))
     .then(() => document.fonts.ready)
-    .then(() => { Array.from(stage.querySelectorAll('section.combo')).forEach(layoutOne); startNav(); });
+    .then(() => {
+      if (!document.body.contains(stage)) return;     // deck closed by gate.js
+      Array.from(stage.querySelectorAll('section.combo')).forEach(layoutOne); startNav();
+    });
 })();

@@ -1,0 +1,163 @@
+<!DOCTYPE html><html lang="uz"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Boshqaruv — MS testlar</title><style>*{box-sizing:border-box}
+body{margin:0;background:#0B1B3A;color:#fff;font:16px/1.4 "Segoe UI",Roboto,system-ui,sans-serif;min-height:100vh}
+header{padding:36px 5vw 4px}h1{margin:0;font-size:clamp(28px,4vw,44px);font-weight:900;letter-spacing:-.01em}
+h1 b{color:#FFC531}header p{margin:8px 0 0;color:#9FB3D9}
+.wrap{padding:0 5vw}
+.tabs{display:flex;gap:14px;flex-wrap:wrap;padding:22px 5vw 18px}
+.tab{flex:1 1 260px;max-width:380px;display:flex;align-items:center;gap:16px;padding:16px 22px;border-radius:18px;
+  border:2px solid #24407A;background:#13284F;color:#fff;font-family:inherit;font-size:24px;font-weight:800;
+  line-height:1.15;text-align:left;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+.tab:hover{transform:translateY(-2px)}
+.tab .ico{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:#0B1B3A;
+  color:#FFC531;font-size:28px;font-weight:900}
+.tab small{display:block;margin-top:3px;font-size:14px;font-weight:600;color:#9FB3D9}
+.tab.on{background:#FFC531;border-color:#FFC531;color:#0B1B3A}.tab.on small{color:#43517A}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{position:relative;display:block;background:#13284F;border-radius:14px;overflow:hidden;color:#fff;text-decoration:none;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);transition:transform .15s,box-shadow .15s}
+a.card:hover,a.card:focus{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.4);outline:none}
+.card img{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#0E2247}
+.card>span{display:block;padding:10px 14px;font-weight:800;font-size:17px}
+.empty{padding:30px 0;color:#9FB3D9;font-size:18px}
+footer{padding:34px 5vw 40px;color:#6F84AD;font-size:14px}
+.box{max-width:620px;background:#13284F;border-radius:18px;padding:24px 26px;margin-top:22px}
+.box h2{margin:0 0 8px}.box p{color:#C9D5EE}code{background:#0B1B3A;padding:1px 6px;border-radius:6px}
+input{width:100%;margin:10px 0 12px;padding:13px 14px;border-radius:12px;border:2px solid #24407A;background:#0B1B3A;
+  color:#fff;font:16px monospace}
+.btn{padding:11px 18px;border-radius:12px;border:2px solid #24407A;background:#13284F;color:#fff;font-family:inherit;
+  font-size:15px;font-weight:700;cursor:pointer}
+.btn.y{background:#FFC531;border-color:#FFC531;color:#0B1B3A}.btn:disabled{opacity:.45;cursor:default}
+.btn.ghost{background:none}
+.err{color:#FF8A80;min-height:1.2em}details{margin-top:8px;color:#C9D5EE}summary{cursor:pointer;font-weight:700}
+details li{margin:4px 0}details a{color:#FFC531}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px}.bar .sp{flex:1}
+#state{color:#9FB3D9;font-weight:600}#state.ok{color:#7BE0A6}#state.bad{color:#FF8A80}
+.card.adm{cursor:pointer;user-select:none;-webkit-user-select:none}
+.card.adm.off img{opacity:.3;filter:grayscale(1)}.card.adm.off .row span{color:#7D8FB5}
+.row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;font-weight:800;font-size:17px}
+.sw{flex:none;width:48px;height:28px;border-radius:14px;background:#3A4A6B;position:relative;transition:background .15s}
+.sw::after{content:"";position:absolute;top:4px;left:4px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}
+.card.adm:not(.off) .sw{background:#2BB673}.card.adm:not(.off) .sw::after{left:24px}
+.open{position:absolute;top:8px;right:8px;background:rgba(11,27,58,.85);color:#fff;font-size:13px;font-weight:700;
+  padding:5px 10px;border-radius:8px;text-decoration:none}
+</style></head><body>
+<header><h1>Boshqaruv <b>paneli</b></h1><p>Saytda qaysi prezentatsiyalar ko‘rinishini belgilang va «Saqlash»ni bosing.</p></header>
+
+<section id="login" class="wrap" hidden><div class="box">
+<h2>Kirish</h2>
+<p>GitHub tokeningizni kiriting. Token faqat shu qurilmadagi brauzerda saqlanadi va faqat GitHub’ga yuboriladi.</p>
+<input id="tok" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+<button id="loginBtn" class="btn y">Kirish</button>
+<p id="loginErr" class="err"></p>
+<details><summary>Token qanday olinadi?</summary><ol>
+<li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> sahifasini oching.</li>
+<li>Token name: masalan <code>MS boshqaruv</code>; Expiration: o‘zingiz tanlang.</li>
+<li>Repository access: <b>Only select repositories</b> → <code>ms-test-yechimlar</code>.</li>
+<li>Permissions → Repository permissions → <b>Contents: Read and write</b>.</li>
+<li><b>Generate token</b> → tokenni nusxalab shu yerga qo‘ying.</li>
+</ol></details>
+</div></section>
+
+<section id="panel" hidden>
+<nav class="tabs">
+<button class="tab" data-s="F"><span class="ico">F</span><span>Fizika<small><i></i> ko‘rinadi</small></span></button>
+<button class="tab" data-s="M"><span class="ico">M</span><span>Matematika<small><i></i> ko‘rinadi</small></span></button>
+</nav>
+<div class="bar wrap">
+<button id="allOn" class="btn">Hammasini ko‘rsatish</button><button id="allOff" class="btn">Hammasini yashirish</button>
+<span id="state"></span><span class="sp"></span>
+<button id="save" class="btn y" disabled>Saqlash</button><button id="logout" class="btn ghost">Chiqish</button>
+</div>
+<main class="wrap"><div id="grid" class="grid"></div></main>
+</section>
+<footer>Kartochkani bosing — ko‘rinadi / yashirin. Yashirin prezentatsiyalar bosh sahifada chiqmaydi va havola orqali ham
+ochilmaydi (faqat siz kirgan qurilmada ochiladi).</footer>
+<script>
+const OWNER = 'muhriddinfayz', REPO = 'ms-test-yechimlar';
+const API = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/contents/visible.json';
+const DECKS = [{"c":"F3","s":"F","n":3,"k":"MS TEST","h":"Fizika_MS_TEST_3_prezentatsiya.html"},{"c":"F4","s":"F","n":4,"k":"MS TEST","h":"Fizika_MS_TEST_4_prezentatsiya.html"},{"c":"F5","s":"F","n":5,"k":"MS TEST","h":"Fizika_MS_TEST_5_prezentatsiya.html"},{"c":"F6","s":"F","n":6,"k":"MS TEST","h":"Fizika_MS_TEST_6_prezentatsiya.html"},{"c":"F7","s":"F","n":7,"k":"MS TEST","h":"Fizika_MS_TEST_7_prezentatsiya.html"},{"c":"F8","s":"F","n":8,"k":"MS TEST","h":"Fizika_MS_TEST_8_prezentatsiya.html"},{"c":"F9","s":"F","n":9,"k":"MS TEST","h":"Fizika_MS_TEST_9_prezentatsiya.html"},{"c":"F10","s":"F","n":10,"k":"MS TEST","h":"Fizika_MS_TEST_10_prezentatsiya.html"},{"c":"F11","s":"F","n":11,"k":"MS TEST","h":"Fizika_MS_TEST_11_prezentatsiya.html"},{"c":"F12","s":"F","n":12,"k":"MS TEST","h":"Fizika_MS_TEST_12_prezentatsiya.html"},{"c":"F13","s":"F","n":13,"k":"MS TEST","h":"Fizika_MS_TEST_13_prezentatsiya.html"},{"c":"F14","s":"F","n":14,"k":"MS TEST","h":"Fizika_MS_TEST_14_prezentatsiya.html"},{"c":"F15","s":"F","n":15,"k":"MS TEST","h":"Fizika_MS_TEST_15_prezentatsiya.html"},{"c":"F16","s":"F","n":16,"k":"MS TEST","h":"Fizika_MS_TEST_16_prezentatsiya.html"},{"c":"F17","s":"F","n":17,"k":"MS TEST","h":"Fizika_MS_TEST_17_prezentatsiya.html"},{"c":"F18","s":"F","n":18,"k":"MS TEST","h":"Fizika_MS_TEST_18_prezentatsiya.html"},{"c":"F19","s":"F","n":19,"k":"MS TEST","h":"Fizika_MS_TEST_19_prezentatsiya.html"},{"c":"F20","s":"F","n":20,"k":"MS TEST","h":"Fizika_MS_TEST_20_prezentatsiya.html"},{"c":"F21","s":"F","n":21,"k":"MS TEST","h":"Fizika_MS_TEST_21_prezentatsiya.html"},{"c":"F22","s":"F","n":22,"k":"MS TEST","h":"Fizika_MS_TEST_22_prezentatsiya.html"},{"c":"F23","s":"F","n":23,"k":"MS TEST","h":"Fizika_MS_TEST_23_prezentatsiya.html"},{"c":"F24","s":"F","n":24,"k":"MS TEST","h":"Fizika_MS_TEST_24_prezentatsiya.html"},{"c":"F25","s":"F","n":25,"k":"MS TEST","h":"Fizika_MS_TEST_25_prezentatsiya.html"},{"c":"F26","s":"F","n":26,"k":"MS TEST","h":"Fizika_MS_TEST_26_prezentatsiya.html"},{"c":"F27","s":"F","n":27,"k":"MS TEST","h":"Fizika_MS_TEST_27_prezentatsiya.html"},{"c":"F28","s":"F","n":28,"k":"MS TEST","h":"Fizika_MS_TEST_28_prezentatsiya.html"},{"c":"F29","s":"F","n":29,"k":"MS TEST","h":"Fizika_MS_TEST_29_prezentatsiya.html"},{"c":"F30","s":"F","n":30,"k":"MS TEST","h":"Fizika_MS_TEST_30_prezentatsiya.html"},{"c":"F31","s":"F","n":31,"k":"MS TEST","h":"Fizika_MS_TEST_31_prezentatsiya.html"},{"c":"F32","s":"F","n":32,"k":"MS TEST","h":"Fizika_MS_TEST_32_prezentatsiya.html"},{"c":"F33","s":"F","n":33,"k":"MS TEST","h":"Fizika_MS_TEST_33_prezentatsiya.html"},{"c":"M1","s":"M","n":1,"k":"MOCK","h":"Matematika_MOCK_1_prezentatsiya.html"},{"c":"M2","s":"M","n":2,"k":"MOCK","h":"Matematika_MOCK_2_prezentatsiya.html"},{"c":"M3","s":"M","n":3,"k":"MOCK","h":"Matematika_MOCK_3_prezentatsiya.html"},{"c":"M4","s":"M","n":4,"k":"MOCK","h":"Matematika_MOCK_4_prezentatsiya.html"},{"c":"M5","s":"M","n":5,"k":"MOCK","h":"Matematika_MOCK_5_prezentatsiya.html"},{"c":"M6","s":"M","n":6,"k":"MOCK","h":"Matematika_MOCK_6_prezentatsiya.html"},{"c":"M7","s":"M","n":7,"k":"MOCK","h":"Matematika_MOCK_7_prezentatsiya.html"},{"c":"M8","s":"M","n":8,"k":"MOCK","h":"Matematika_MOCK_8_prezentatsiya.html"},{"c":"M9","s":"M","n":9,"k":"MOCK","h":"Matematika_MOCK_9_prezentatsiya.html"},{"c":"M10","s":"M","n":10,"k":"MOCK","h":"Matematika_MOCK_10_prezentatsiya.html"},{"c":"M11","s":"M","n":11,"k":"MOCK","h":"Matematika_MOCK_11_prezentatsiya.html"},{"c":"M12","s":"M","n":12,"k":"MOCK","h":"Matematika_MOCK_12_prezentatsiya.html"},{"c":"M13","s":"M","n":13,"k":"MOCK","h":"Matematika_MOCK_13_prezentatsiya.html"},{"c":"M14","s":"M","n":14,"k":"MOCK","h":"Matematika_MOCK_14_prezentatsiya.html"},{"c":"M15","s":"M","n":15,"k":"MOCK","h":"Matematika_MOCK_15_prezentatsiya.html"},{"c":"M16","s":"M","n":16,"k":"MOCK","h":"Matematika_MOCK_16_prezentatsiya.html"},{"c":"M17","s":"M","n":17,"k":"MOCK","h":"Matematika_MOCK_17_prezentatsiya.html"},{"c":"M18","s":"M","n":18,"k":"MOCK","h":"Matematika_MOCK_18_prezentatsiya.html"},{"c":"M19","s":"M","n":19,"k":"MOCK","h":"Matematika_MOCK_19_prezentatsiya.html"},{"c":"M20","s":"M","n":20,"k":"MOCK","h":"Matematika_MOCK_20_prezentatsiya.html"},{"c":"M21","s":"M","n":21,"k":"MOCK","h":"Matematika_MOCK_21_prezentatsiya.html"},{"c":"M22","s":"M","n":22,"k":"MOCK","h":"Matematika_MOCK_22_prezentatsiya.html"},{"c":"M23","s":"M","n":23,"k":"MOCK","h":"Matematika_MOCK_23_prezentatsiya.html"},{"c":"M24","s":"M","n":24,"k":"MOCK","h":"Matematika_MOCK_24_prezentatsiya.html"},{"c":"M25","s":"M","n":25,"k":"MOCK","h":"Matematika_MOCK_25_prezentatsiya.html"},{"c":"M26","s":"M","n":26,"k":"MOCK","h":"Matematika_MOCK_26_prezentatsiya.html"},{"c":"M27","s":"M","n":27,"k":"MOCK","h":"Matematika_MOCK_27_prezentatsiya.html"},{"c":"M28","s":"M","n":28,"k":"MOCK","h":"Matematika_MOCK_28_prezentatsiya.html"},{"c":"M29","s":"M","n":29,"k":"MOCK","h":"Matematika_MOCK_29_prezentatsiya.html"},{"c":"M30","s":"M","n":30,"k":"MOCK","h":"Matematika_MOCK_30_prezentatsiya.html"},{"c":"M31","s":"M","n":31,"k":"MOCK","h":"Matematika_MOCK_31_prezentatsiya.html"},{"c":"M32","s":"M","n":32,"k":"MOCK","h":"Matematika_MOCK_32_prezentatsiya.html"},{"c":"M33","s":"M","n":33,"k":"MOCK","h":"Matematika_MOCK_33_prezentatsiya.html"},{"c":"M34","s":"M","n":34,"k":"MOCK","h":"Matematika_MOCK_34_prezentatsiya.html"},{"c":"M35","s":"M","n":35,"k":"MOCK","h":"Matematika_MOCK_35_prezentatsiya.html"},{"c":"M36","s":"M","n":36,"k":"MOCK","h":"Matematika_MOCK_36_prezentatsiya.html"},{"c":"M37","s":"M","n":37,"k":"MOCK","h":"Matematika_MOCK_37_prezentatsiya.html"},{"c":"M38","s":"M","n":38,"k":"MOCK","h":"Matematika_MOCK_38_prezentatsiya.html"},{"c":"M39","s":"M","n":39,"k":"MOCK","h":"Matematika_MOCK_39_prezentatsiya.html"},{"c":"M40","s":"M","n":40,"k":"MOCK","h":"Matematika_MOCK_40_prezentatsiya.html"},{"c":"M41","s":"M","n":41,"k":"MOCK","h":"Matematika_MOCK_41_prezentatsiya.html"},{"c":"M42","s":"M","n":42,"k":"MOCK","h":"Matematika_MOCK_42_prezentatsiya.html"},{"c":"M43","s":"M","n":43,"k":"MOCK","h":"Matematika_MOCK_43_prezentatsiya.html"},{"c":"M44","s":"M","n":44,"k":"MOCK","h":"Matematika_MOCK_44_prezentatsiya.html"},{"c":"M45","s":"M","n":45,"k":"MOCK","h":"Matematika_MOCK_45_prezentatsiya.html"},{"c":"M46","s":"M","n":46,"k":"MOCK","h":"Matematika_MOCK_46_prezentatsiya.html"},{"c":"M47","s":"M","n":47,"k":"MOCK","h":"Matematika_MOCK_47_prezentatsiya.html"},{"c":"M48","s":"M","n":48,"k":"MOCK","h":"Matematika_MOCK_48_prezentatsiya.html"},{"c":"M49","s":"M","n":49,"k":"MOCK","h":"Matematika_MOCK_49_prezentatsiya.html"},{"c":"M50","s":"M","n":50,"k":"MOCK","h":"Matematika_MOCK_50_prezentatsiya.html"},{"c":"M51","s":"M","n":51,"k":"MOCK","h":"Matematika_MOCK_51_prezentatsiya.html"},{"c":"M52","s":"M","n":52,"k":"MOCK","h":"Matematika_MOCK_52_prezentatsiya.html"},{"c":"M53","s":"M","n":53,"k":"MOCK","h":"Matematika_MOCK_53_prezentatsiya.html"},{"c":"M54","s":"M","n":54,"k":"MOCK","h":"Matematika_MOCK_54_prezentatsiya.html"}];
+const $ = id => document.getElementById(id);
+let token = '', sha = null, vis = new Set(), saved = '', cur = location.hash === '#matematika' ? 'M' : 'F';
+try { token = localStorage.getItem('msOwnerToken') || ''; } catch (e) {}
+
+const hdr = () => ({ Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' });
+const key = () => JSON.stringify(DECKS.map(d => d.c).filter(c => vis.has(c)));
+const dirty = () => key() !== saved;
+
+async function fetchFile(){
+  const r = await fetch(API + '?ref=main', { headers: hdr(), cache: 'no-store' });
+  if (r.status === 401) throw new Error('Token noto‘g‘ri yoki muddati tugagan.');
+  if (r.status === 403 || r.status === 404) throw new Error('Bu tokenga «' + REPO + '» repozitoriysiga ruxsat berilmagan.');
+  if (!r.ok) throw new Error('GitHub xatosi: ' + r.status);
+  return r.json();
+}
+async function load(){
+  const j = await fetchFile();
+  sha = j.sha;
+  vis = new Set(JSON.parse(atob(j.content.replace(/\s/g, ''))).visible || []);
+  saved = key();
+}
+function state(text, cls){ const s = $('state'); s.textContent = text; s.className = cls || ''; }
+function render(){
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('on', t.dataset.s === cur);
+    const all = DECKS.filter(d => d.s === t.dataset.s);
+    t.querySelector('i').textContent = all.filter(d => vis.has(d.c)).length + ' / ' + all.length;
+  });
+  $('grid').innerHTML = DECKS.filter(d => d.s === cur).map(d =>
+    '<div class="card adm' + (vis.has(d.c) ? '' : ' off') + '" data-c="' + d.c + '"><img src="images/' + d.c +
+    '/thumb.webp" alt="" width="640" height="360" loading="lazy"><div class="row"><span>' + d.k + ' ' + d.n +
+    '</span><b class="sw"></b></div><a class="open" href="' + d.h + '" target="_blank" rel="noopener">Ochish ↗</a></div>').join('');
+  $('save').disabled = !dirty();
+  if (dirty()) state('Saqlanmagan o‘zgarishlar bor', '');
+}
+function show(panel){ $('login').hidden = panel; $('panel').hidden = !panel; if (panel) render(); }
+
+$('grid').addEventListener('click', e => {
+  if (e.target.closest('.open')) return;
+  const c = e.target.closest('.card'); if (!c) return;
+  vis.has(c.dataset.c) ? vis.delete(c.dataset.c) : vis.add(c.dataset.c); render();
+});
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  cur = t.dataset.s; history.replaceState(null, '', cur === 'M' ? '#matematika' : '#fizika'); render();
+}));
+$('allOn').onclick = () => { DECKS.filter(d => d.s === cur).forEach(d => vis.add(d.c)); render(); };
+$('allOff').onclick = () => { DECKS.filter(d => d.s === cur).forEach(d => vis.delete(d.c)); render(); };
+
+function put(text){
+  return fetch(API, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, hdr()),
+    body: JSON.stringify({ message: 'Ko‘rinadigan prezentatsiyalar yangilandi', content: btoa(text), sha: sha, branch: 'main' }) });
+}
+$('save').onclick = async () => {
+  $('save').disabled = true; state('Saqlanmoqda…');
+  const text = JSON.stringify({ visible: JSON.parse(key()) }, null, 1) + '\n';
+  try {
+    let r = await put(text);
+    if (r.status === 409 || r.status === 422) { sha = (await fetchFile()).sha; r = await put(text); }
+    if (r.status === 403 || r.status === 404) throw new Error('Tokenda yozish ruxsati yo‘q (Contents: Read and write kerak).');
+    if (!r.ok) throw new Error('GitHub xatosi: ' + r.status);
+    sha = (await r.json()).content.sha; saved = key(); render();
+    state('Saqlandi ✓ Saytda 1–2 daqiqada yangilanadi.', 'ok');
+  } catch (err) { state(err.message, 'bad'); $('save').disabled = false; }
+};
+$('loginBtn').onclick = async () => {
+  token = $('tok').value.trim(); $('loginErr').textContent = '';
+  if (!token) return;
+  $('loginBtn').disabled = true;
+  try { await load(); localStorage.setItem('msOwnerToken', token); $('tok').value = ''; show(true); }
+  catch (err) { $('loginErr').textContent = err.message; token = ''; }
+  $('loginBtn').disabled = false;
+};
+$('tok').addEventListener('keydown', e => { if (e.key === 'Enter') $('loginBtn').click(); });
+$('logout').onclick = () => {
+  if (dirty() && !confirm('Saqlanmagan o‘zgarishlar yo‘qoladi. Chiqasizmi?')) return;
+  localStorage.removeItem('msOwnerToken'); token = ''; vis = new Set(); saved = ''; show(false);
+};
+addEventListener('beforeunload', e => { if (token && dirty()) { e.preventDefault(); e.returnValue = ''; } });
+
+if (token) load().then(() => show(true)).catch(err => { $('loginErr').textContent = err.message; show(false); });
+else show(false);
+</script>
+</body></html>
