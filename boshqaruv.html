@@ -54,8 +54,11 @@ details li{margin:4px 0}details a{color:#FFC531}
 <details><summary>Token qanday olinadi?</summary><ol>
 <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> sahifasini oching.</li>
 <li>Token name: masalan <code>MS boshqaruv</code>; Expiration: o‘zingiz tanlang.</li>
-<li>Repository access: <b>Only select repositories</b> → <code>ms-test-yechimlar</code>.</li>
-<li>Permissions → Repository permissions → <b>Contents: Read and write</b>.</li>
+<li>Resource owner: <code>muhriddinfayz</code>.</li>
+<li>Repository access: <b>Only select repositories</b> → <code>ms-test-yechimlar</code> ni tanlang
+(«Public repositories» bo‘lsa faqat o‘qiy oladi, saqlay olmaydi).</li>
+<li>Permissions → Repository permissions → <b>Contents</b> → ochiladigan ro‘yxatdan <b>Read and write</b>
+(odatda «Read-only» turadi — uni almashtiring).</li>
 <li><b>Generate token</b> → tokenni nusxalab shu yerga qo‘ying.</li>
 </ol></details>
 </div></section>
@@ -136,8 +139,12 @@ $('save').onclick = async () => {
   try {
     let r = await put(text);
     if (r.status === 409 || r.status === 422) { sha = (await fetchFile()).sha; r = await put(text); }
-    if (r.status === 403 || r.status === 404) throw new Error('Tokenda yozish ruxsati yo‘q (Contents: Read and write kerak).');
-    if (!r.ok) throw new Error('GitHub xatosi: ' + r.status);
+    if (!r.ok) {
+      let m = ''; try { m = (await r.json()).message || ''; } catch (e) {}
+      if (r.status === 404) throw new Error('Token «' + REPO + '» repozitoriysiga ulanmagan: Repository access → «Only select repositories» → ' + REPO + '. (GitHub: 404 ' + m + ')');
+      if (r.status === 403) throw new Error('Tokenda yozish ruxsati yo‘q: Repository permissions → Contents → «Read and write». (GitHub: 403 ' + m + ')');
+      throw new Error('GitHub xatosi: ' + r.status + ' ' + m);
+    }
     sha = (await r.json()).content.sha; saved = key(); render();
     state('Saqlandi ✓ Saytda 1–2 daqiqada yangilanadi.', 'ok');
   } catch (err) { state(err.message, 'bad'); $('save').disabled = false; }
